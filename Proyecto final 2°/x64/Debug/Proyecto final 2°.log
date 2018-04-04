@@ -1,0 +1,12 @@
+﻿  main.cpp
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\enemy.h(20): error C2061: error de sintaxis: identificador 'Player'
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\main.cpp(282): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\main.cpp(345): error C2660: 'Enemy::Response': la función no acepta 4 argumentos
+  Player.cpp
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\enemy.h(20): error C2061: error de sintaxis: identificador 'Player'
+  Enemy.cpp
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\player.h(21): error C2065: 'Enemy': identificador no declarado
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\player.h(21): error C2059: error de sintaxis: '>'
+c:\users\predator g9-593-78\source\repos\proyecto final 2°\proyecto final 2°\player.h(21): error C2976: 'std::vector': no hay suficientes argumentos de plantilla
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.12.25827\include\vector(658): note: vea la declaración de 'std::vector'
+  Generando código...

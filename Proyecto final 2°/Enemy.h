@@ -1,5 +1,6 @@
-//por algún motivo el linker me dice que stoy haciendo una declaración en otro lado y no compila si no pongo esto...
-#pragma once 
+#pragma once
+#include "Headers.h"
+#include "Player.h"
 
 class Enemy
 {
@@ -15,5 +16,7 @@ public:
 
 	Enemy();
 	~Enemy();
+
+	void Response(vector <string> words, string enemyNames[5], Player &hero, vector <Enemy*> enemies);
 };
 
