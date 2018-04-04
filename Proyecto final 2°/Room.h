@@ -1,5 +1,5 @@
+#pragma once
 #include "Headers.h"
-#include "Enemy.h"
 
 class Room
 {

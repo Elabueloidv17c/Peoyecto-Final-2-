@@ -1,31 +1,10 @@
+#pragma once
 #include "Headers.h"
 #include "Player.h"
 #include "Room.h"
 #include "Enemy.h"
 
-int MAP[16][16] = {
-	//Primer nivel
-	{ 0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
-	//Segundo nivel
-	{ 0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0 },
-	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0 },
-	{ 0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0 },
-	//Tercer nivel
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0 }
-};
-
-string rooms[16] = {
+string rooms [16] = {
 	//Primer nivel
 	"entrada",
 	"explanada",
@@ -47,7 +26,7 @@ string rooms[16] = {
 	"atalaya"
 };
 
-string enemyNames[5] = {
+string enemyNames [5] = {
 	"gremlin",
 	"goblin",
 	"orco",
@@ -55,31 +34,91 @@ string enemyNames[5] = {
 	"dragon"
 };
 
-//Busca las posibles expansiones y se las notifica al usuario
-void Expansion(int position, vector <string>& paths)
+int MAP[16][16] = {
+//Primer nivel
+{ 0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0 },
+//Segundo nivel
+{ 0,0,0,0,0,0,0,1,1,1,0,1,0,0,0,0 },
+{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0 },
+{ 0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0 },
+{ 0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0 },
+//Tercer nivel
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
+{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0 }
+};
+
+//Describe los enemigos de los cuartos
+void Descriptions(Player hero, vector <Enemy*> enemies)
 {
-	for (int i = 0; i < rooms->length(); i++)
+	switch (hero.m_position)
 	{
-		if (MAP[position][i] == 1)
+	case 1:
+		if (enemies[0]->m_alive == 1)
 		{
-			paths.push_back(rooms[i]);
+			cout << "Hay un " << enemyNames[enemies[0]->m_name] << " en la parte trasera, esta rematando al ultimo sobreviviente" << endl;
+			break;
 		}
+	case 4:
+		if (enemies[1]->m_alive == 1)
+		{
+			cout << "Hay un " << enemyNames[enemies[1]->m_name]  << " sentado en un sillon, esta jugando con un dedo humano" << endl;
+			break;
+		}
+	case 7:
+		if (enemies[2]->m_alive == 1)
+		{
+			cout << "Hay un " << enemyNames[enemies[2]->m_name] << " degustando comida podrida de un sarten" << endl;
+			break;
+		}
+	case 8:
+		if (enemies[3]->m_alive == 1)
+		{
+			cout << "Hay un " << enemyNames[enemies[3]->m_name] << " recostado en la cama principal" << endl;
+			break;
+		}
+	case 10:
+		if (enemies[4]->m_alive == 1)
+		{
+			cout << "Justo al centro hay un " << enemyNames[enemies[4]->m_name] << " con armadura pesada levantando los brazos y gritando, cuando te ve se lanza sobre ti" << endl;
+			break;
+		}
+	case 11:
+		if (enemies[5]->m_alive == 1)
+		{
+			cout << "Un " << enemyNames[enemies[5]->m_name] << " borracho lanza su tarro de carveza contra la pared y te grita" << endl;
+			break;
+		}
+	case 12:
+		if (enemies[6]->m_alive == 1)
+		{
+			cout << "En la oscuridad alcanzas a ver los ojos brillantes de un " << enemyNames[enemies[6]->m_name] << endl;
+			break;
+		}
+	case 13:
+		if (enemies[7]->m_alive == 1)
+		{
+			cout << "Puedes ver a un " << enemyNames[enemies[7]->m_name] << " buscando su mazo entre las armas" << endl;
+			break;
+		}
+	case 15:
+		if (enemies[8]->m_alive == 1)
+		{
+			cout << "El " << enemyNames[enemies[8]->m_name] << " ruge y el castillo tiembla, lanza un aliento de fuego sobre ti" << endl;
+			break;
+		}
+	default:
+		cout << "No hay ningun enemigo a la vista" << endl;
+		break;
 	}
-	if (paths.size() > 1)
-	{
-		cout << "Puedes ir a estos lugares: " << "\t";
-	}
-	else
-	{
-		cout << "Solo puedes ir por aqui: " << "\t";
-	}
-	for (int i = 0; i < paths.size(); i++)
-	{
-		cout << paths[i];
-		if (i < paths.size() - 1)
-			cout << ", ";
-	}
-	cout << endl;
 }
 
 //Te dice si un string existe dentro de un vector
@@ -115,107 +154,13 @@ void Split(vector <string>& words, const string& str, char space)
 	return;
 }
 
-//Movimiento
-void Movement(Player &hero, vector <string> words, vector <string> paths)
-{
-	if (Exist(words[1], paths))
-	{
-		int j = 0;
-		while (j < rooms->length())
-		{
-			if (words[1] == rooms[j])
-				break;
-			j++;
-		}
-		hero.m_position = j;
-		cout << "Te has movido a " << rooms[hero.m_position] << endl;
-	}
-	else
-	{
-		cout << "No es posible ir a " << words[1] << endl;
-	}
-	return;
-};
-
-//Subir y bajar escaleras
-void Stairs(Player &hero, vector <string> words)
-{
-	if (words[0] == "subir")
-	{
-		if (hero.m_position == 5 || hero.m_position == 6 || hero.m_position == 13)
-		{
-			if (words[1] == "escalera" || words[1] == "escaleras")
-			{
-				switch (hero.m_position)
-				{
-
-				case 5:
-					hero.m_position = 6;
-					cout << "Has subido a " << rooms[hero.m_position] << endl;
-					break;
-				case 6:
-					hero.m_position = 13;
-					cout << "Has subido a " << rooms[hero.m_position] << endl;
-					break;
-
-				default:
-					cout << "No puedo subir por aquí..." << endl;
-					break;
-				}
-			}
-			else
-			{
-				cout << "No puedo subir " << words[1] << endl;
-			}
-		}
-		else
-		{
-			cout << "No hay nada que subir aqui..." << endl;
-		}
-	}
-	else
-	{
-		if (hero.m_position == 5 || hero.m_position == 6 || hero.m_position == 13)
-		{
-			if (words[1] == "escalera" || words[1] == "escaleras")
-			{
-				switch (hero.m_position)
-				{
-
-				case 13:
-					hero.m_position = 6;
-					cout << "Has bajado a " << rooms[hero.m_position] << endl;
-					break;
-				case 6:
-					hero.m_position = 5;
-					cout << "Has bajado a " << rooms[hero.m_position] << endl;
-					break;
-
-				default:
-					cout << "No puedo bajar por aqui..." << endl;
-					break;
-				}
-			}
-			else
-			{
-				cout << "No puedo subir " << words[1] << endl;
-			}
-		}
-		else
-		{
-			cout << "No hay nada que bajar aqui..." << endl;
-		}
-	}
-}
-
-//Llena el vector que almacena los cuartos y enemigos
+//Crea todos los objetos del juego
 void NewGame(vector <Room*>& map, vector <Enemy*>& enemies)
 {
 	//Esto crea un vector de todos mis cuartos y les asigna los valores a sus miembros
-	Room* unit = new Room;
 	for (int i = 0; i < 16; i++)
 	{
-		map.push_back(unit);
+		map.push_back(new Room());
 	}
 	for (int i = 0; i < map.size(); i++)
 	{
@@ -341,51 +286,6 @@ void NewGame(vector <Room*>& map, vector <Enemy*>& enemies)
 	enemies[random2 + 2]->m_key = 1;
 }
 
-//Llama a las otras funciones
-void Caller(Player hero, vector <string> paths, vector <string> words, vector <Room*> map, vector <Enemy*> enemies)
-{
-	string phrase;
-	while (true)
-	{
-		Expansion(hero.m_position, paths);
-
-		//pequeña prueba para comprobar que los datos almacenados en el mapa son correctos
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			if (enemies[i]->m_key == 1)
-			{
-				cout << "La llave se encuentra en " << rooms[enemies[i]->m_position] << "..." << " la tiene un "  << 
-				enemyNames[enemies[i]->m_name] << endl << endl;
-			}
-		}
-
-		getline(cin, phrase);
-		Split(words, phrase, ' ');
-		if (words.size() > 0)
-		{
-			if (words[0] == "ir")
-			{
-				Movement(hero, words, paths);
-			}
-			else if (words[0] == "subir" || words[0] == "bajar")
-			{
-				Stairs(hero, words);
-			}
-			else
-			{
-				cout << "Operacion invalida" << endl;
-			}
-		}
-		else
-		{
-			cout << "Operacion invalida" << endl;
-		}
-		words.clear();
-		paths.clear();
-	}
-	return;
-}
-
 //Salvar partida ver 1.0
 void SaveGame(Player &hero, vector <short>& data)
 {
@@ -408,16 +308,56 @@ void SaveGame(Player &hero, vector <short>& data)
 	return;
 }
 
+//Llama a las otras funciones
+void Caller(Player hero, vector <string> paths, vector <string> words, vector <Room*> map, vector <Enemy*> enemies, int MAP[16][16])
+{
+	string phrase;
+	cout << map[hero.m_position]->m_description << endl;
+	while (true)
+	{
+		Descriptions(hero, enemies);
+		hero.Expansion(hero.m_position, paths, MAP, rooms);
+		getline(cin, phrase);
+		Split(words, phrase, ' ');
+		if (words.size() > 0)
+		{
+			if (words[0] == "ir")
+			{
+				hero.Movement(hero, words, paths, MAP, rooms, map);
+			}
+			else if (words[0] == "subir" || words[0] == "bajar")
+			{
+				hero.Stairs(hero, words, rooms);
+			}
+			else if (words[0] == "atacar")
+			{
+				hero.Attack(words, enemyNames, hero, enemies, map);
+			}
+			else
+			{
+				cout << "Operacion invalida" << endl;
+			}
+		}
+		else
+		{
+			cout << "No introduciste ninguna accion" << endl;
+		}
+		enemies[0]->Response(words, enemyNames, hero, enemies);
+		words.clear();
+		paths.clear();
+	}
+	return;
+}
+
 int main()
 {
 	vector <string> paths, words;
 	vector <Room*> map;
 	vector <Enemy*> enemies;
 	vector <short> data;
-	Player hero(0, 1, 100, 100, 0, 100);
+	Player hero(0, 1, 100, 100, 0, 100, 5);
 	NewGame(map, enemies);
-	Caller(hero, paths, words, map, enemies);
-
+	Caller(hero, paths, words, map, enemies, MAP);
 	cin.ignore();
 	cin.get();
 	return 0;
