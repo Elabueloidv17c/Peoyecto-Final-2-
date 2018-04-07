@@ -10,7 +10,6 @@ public:
 	bool m_alive;
 	bool m_key;
 	int m_health;
-	int m_defense;
 	int m_name;
 	int m_attack;
 

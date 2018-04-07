@@ -9,6 +9,7 @@ public:
 	bool m_locked;
 	bool m_manaPot;
 	bool m_healthPot;
+	bool m_key;
 
 	Room();
 	~Room();
