@@ -26,6 +26,35 @@ string rooms [16] = {
 	"atalaya"
 };
 
+string help[26] = {
+	"Como jugar?",
+	"Para ejecutar cualquier accion debes introducir comandos de dos palabras separadas por un espacio",
+	"Que puedo hacer?",
+	"Ir: Esta accion sirve para desplazarte por el mapa, debes escribir el comando y una habitacion, por ejemplo:",
+	"    -Ir explanada",
+	"Subir/Bajar: Esta accion sirve para desplazarte por las escaleras, debes escribir el comando y la palabra 'escalera', por ejemplo:",
+	"    -Subir escalera",
+	"Explorar: Esta accion sirve para explorar la habitacion en la que te encuentras, con esto puedes encontrar objetos, por ejemplo:",
+	"    -Explorar sala",
+	"Tomar: Esta accion sirve para tomar los objetos que encuentres en las habitaciones y añadirlo a tu inventario, por ejemplo:",
+	"    -Tomar medicina",
+	"Usar: Esta accion sirve para usar los objetos que tengas en tu inventario, por ejemplo:",
+	"    -Usar medicina",
+	"Atacar: Esta accion sirve para atacar a los enemigos que encuentres en las habitaciones, por ejemplo:",
+	"    -Atacar gremlin",
+	"Maldecir: Esta accion sirve para lanzar una maldicion que infringe mucho daño al enemigo, por ejemplo:",
+	"    -Maldecir Goblin",
+	"Ver: Esta accion sirve para ver los elementos que ya tienes en tu inventario, por ejemplo:",
+	"    -Ver inventario",
+	"Salvar: Esta accion sirve para guardas tus progresos en el juego, por ejemplo:",
+	"    -Salvar partida",
+	"Cargar: Esta accion sirve para cargar una partida guardada y continuar jugando desde ahi, por ejemplo:",
+	"    -Cargar partida",
+	"Puedes usar mayusculas o minusculas a tu gusto, el juego reconocera las palabras de todos modos",
+	"Nota: Si quieres volver a ver este menu, introduce el comando 'Ver ayuda'",
+	"----------------------------------------------------------------------------------------------------------------"
+};
+
 string enemyNames [5] = {
 	"gremlin",
 	"goblin",
@@ -56,8 +85,37 @@ int MAP[16][16] = {
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
 
-vector <short*> data1;
-vector <string> data2;
+
+ostream& operator << (ostream &output, string help[])
+{
+	cout << help[0] << endl;
+	cout << help[1] << endl << endl;
+	cout << help[2] << endl;
+	cout << help[3] << endl;
+	cout << help[4] << endl;
+	cout << help[5] << endl;
+	cout << help[6] << endl;
+	cout << help[7] << endl;
+	cout << help[8] << endl;
+	cout << help[9] << endl;
+	cout << help[10] << endl;
+	cout << help[11] << endl;
+	cout << help[12] << endl;
+	cout << help[13] << endl;
+	cout << help[14] << endl;
+	cout << help[15] << endl;
+	cout << help[16] << endl;
+	cout << help[17] << endl;
+	cout << help[18] << endl;
+	cout << help[19] << endl;
+	cout << help[20] << endl;
+	cout << help[21] << endl;
+	cout << help[22] << endl << endl;
+	cout << help[23] << endl << endl;
+	cout << help[24] << endl;
+	cout << help[25] << endl;
+	return output;
+}
 
 //Describe los enemigos de los cuartos
 void Descriptions(Player hero, vector <Enemy*> enemies)
@@ -184,6 +242,7 @@ void NewGame(vector <Room*>& map, vector <Enemy*>& enemies)
 		map[i]->m_manaPot = 0;
 		map[i]->m_locked = 0;
 		map[i]->m_key = 0;
+		map[i]->m_explored = 0;
 	}
 
 	map[0]->m_description = "Estas en la entrada del castillo, hay un puente de madera frente a ti";
@@ -281,7 +340,7 @@ void NewGame(vector <Room*>& map, vector <Enemy*>& enemies)
 }
 
 //Salvar partida
-void SaveGame(vector <string> words, Player hero, vector <Room*> map, vector <Enemy*> enemies)
+void SaveGame(vector <string> words, Player hero, vector <Room*> map, vector <Enemy*> enemies, string name)
 {
 	if (words[1] == "partida")
 	{
@@ -324,6 +383,11 @@ void SaveGame(vector <string> words, Player hero, vector <Room*> map, vector <En
 		for (int i = 0; i < map.size(); i++)
 		{
 			*writer << map[i]->m_locked << endl;
+		}
+
+		for (int i = 0; i < map.size(); i++)
+		{
+			*writer << map[i]->m_explored << endl;
 		}
 
 		//Enemigos
@@ -374,14 +438,18 @@ void SaveGame(vector <string> words, Player hero, vector <Room*> map, vector <En
 			*text << hero.m_inventory[i] << endl;
 		}
 
+		hero.Map(map, words, name);
+
 		text->close();
 		delete(text);
 		cout << "Partida salvada satisfactoriamente" << endl;
 	}
+
 	else
 	{
 		cout << "Para salvar la partida debes introducir el comando 'Salvar partida'" << endl;
 	}
+
 	cin.ignore();
 	return;
 }
@@ -389,45 +457,25 @@ void SaveGame(vector <string> words, Player hero, vector <Room*> map, vector <En
 //Tutorial
 void Help()
 {
-	cout << "Como jugar?" << endl;
-	cout << "Para ejecutar cualquier accion debes introducir comandos de dos palabras separadas por un espacio" << endl << endl;
-	cout << "Que puedo hacer?" << endl;
-	cout << "Ir: Esta accion sirve para desplazarte por el mapa, debes escribir el comando y una habitacion, por ejemplo:" << endl;
-	cout << "    -Ir explanada" << endl;
-	cout << "Subir/Bajar: Esta accion sirve para desplazarte por las escaleras, debes escribir el comando y la palabra 'escalera', por ejemplo:" << endl;
-	cout << "    -Subir escalera" << endl;
-	cout << "Explorar: Esta accion sirve para explorar la habitacion en la que te encuentras, con esto puedes encontrar objetos, por ejemplo:" << endl;
-	cout << "    -Explorar sala" << endl;
-	cout << "Tomar: Esta accion sirve para tomar los objetos que encuentres en las habitaciones y añadirlo a tu inventario, por ejemplo:" << endl;
-	cout << "    -Tomar medicina" << endl;
-	cout << "Usar: Esta accion sirve para usar los objetos que tengas en tu inventario, por ejemplo:" << endl;
-	cout << "    -Usar medicina" << endl;
-	cout << "Atacar: Esta accion sirve para atacar a los enemigos que encuentres en las habitaciones, por ejemplo:" << endl;
-	cout << "    -Atacar gremlin" << endl;
-	cout << "Maldecir: Esta accion sirve para lanzar una maldicion que infringe mucho daño al enemigo, por ejemplo:" << endl;
-	cout << "    -Maldecir Goblin" << endl;
-	cout << "Ver: Esta accion sirve para ver los elementos que ya tienes en tu inventario, por ejemplo:" << endl;
-	cout << "    -Ver inventario" << endl;
-	cout << "Salvar: Esta accion sirve para guardas tus progresos en el juego, por ejemplo:" << endl;
-	cout << "    -Salvar partida" << endl;
-	cout << "Cargar: Esta accion sirve para cargar una partida guardada y continuar jugando desde ahi, por ejemplo:" << endl;
-	cout << "    -Cargar partida" << endl << endl;
-	cout << "Puedes usar mayusculas o minusculas a tu gusto, el juego reconocera las palabras de todos modos" << endl << endl;
-	cout << "Nota: Si quieres volver a ver este menu, introduce el comando 'Ver ayuda'" << endl;
+	//Sobrecarga para cumplir el requisito 8- )
+	cout << help;
 }
 
 //Cargar partida
-void LoadGame(Player& hero, vector <short*> &data1, vector <string> &data2, vector <Room*> &map, vector <Enemy*> &enemies)
+void LoadGame(Player& hero, vector <Room*> &map, vector <Enemy*> &enemies, string name)
 {
+	vector <short*> data1;
+	vector <string> data2;
 	string line;
 	ifstream* reader = new ifstream;
-	string name;
-	cout << "Cual es el nombre de tu partida guardada?" << endl;
 
+	cout << "Cual es el nombre de tu partida guardada?" << endl;
+	cin.ignore();
 	while (true)
 	{
-		cin >> name;
+		getline(cin, name);
 		reader->open(name + ".txt");
+
 		if (reader->fail())
 		{
 			if (name == "n")
@@ -442,6 +490,7 @@ void LoadGame(Player& hero, vector <short*> &data1, vector <string> &data2, vect
 			cout << "Si quieres iniciar una nueva partida presiona la tecla 'n' y luego presiona enter" << endl;
 			cin.ignore();
 		}
+
 		else
 		{
 			break;
@@ -512,6 +561,12 @@ void LoadGame(Player& hero, vector <short*> &data1, vector <string> &data2, vect
 		index++;
 	}
 
+	for (int i = 0; i < 16; i++)
+	{
+		map[i]->m_explored = *data1[index];
+		index++;
+	}
+
 	//Enemigos
 	for (int i = 0; i < 9; i++)
 	{
@@ -577,6 +632,7 @@ void LoadGame(Player& hero, vector <short*> &data1, vector <string> &data2, vect
 	{
 		delete(data1[i]);
 	}
+
 	data1.clear();
 	data2.clear();
 
@@ -590,26 +646,31 @@ void Intro()
 	cout << "Los guerreros del pueblo habian logrado defender su hogar hasta de los mas grandes orcos." << endl;
 	cout << "Pero esta ultima vez las cosas fueron diferentes... esta vez tu pueblo fue casi aniquilado." << endl;
 	cout << "Un gigantezco dragon lidero el ataque y mucha gente murio..." << endl << endl;
+	Sleep(5000);
 	cout << "La rabia se ha apoderado de ti y solo quieres terminar con esta pesadilla" << endl;
 	cout << "Tomas tus mejores armas y tu libro de maldiciones." << endl;
 	cout << "Es hora de emprender un viaje para terminar con esto de una vez por todas." << endl;
 	cout << "Tu mision es eliminar al dragon que lidera los ataques del castillo." << endl;
 	cout << "No importa lo que cueste, no saldras de ahi sin haber cumplido tu mision." << endl;
 	cout << "Estas cansado de tanta matanza, ahora llevaras la pesadilla hasta ellos..." << endl << endl;
+	Sleep(5000);
 }
 
 //Llama a las otras funciones
-void Caller(Player hero, vector <string> paths, vector <string> words, vector <Room*> map, vector <Enemy*> enemies, int MAP[16][16])
+void Caller(Player hero, vector <string> paths, vector <string> words, vector <Room*> map, vector <Enemy*> enemies, int MAP[16][16], string name)
 {
+	map[0]->m_explored = 1;
 	string phrase;
 	cin.ignore();
 	cin.get();
+	cout << "----------------------------------------------------------------------------------------------------------------" << endl;
+	hero.HUD(rooms);
+	cout << "----------------------------------------------------------------------------------------------------------------" << endl;
 	while (true)
 	{
-		cout << "----------------------------------------------------------------------------------------------------------------";
 		if (hero.m_alive == 0)
 		{
-			cout << endl << "Has pedido, la partida termino, suerte para la proxima..." << endl;
+			cout << endl << "Has perdido, la partida termino, suerte para la proxima..." << endl;
 			break;
 		}
 		if (enemies[8]->m_alive == 0)
@@ -618,21 +679,23 @@ void Caller(Player hero, vector <string> paths, vector <string> words, vector <R
 			cout << "Muchas gracias por jugar, espero que te haya gustado y que vuelvas a jugar pronto" << endl;
 			break;
 		}
-		hero.HUD(hero);
-		cout << "----------------------------------------------------------------------------------------------------------------";
 		hero.Expansion(hero.m_position, paths, MAP, rooms);
 		getline(cin, phrase);
+		system("cls");
+		cout << "----------------------------------------------------------------------------------------------------------------" << endl;
+		hero.HUD(rooms);
+		cout << "----------------------------------------------------------------------------------------------------------------" << endl;
 		cout << endl;
 		Split(words, phrase, ' ');
 		if (words.size() == 2)
 		{
 			if (words[0] == "ir")
 			{
-				hero.Movement(hero, words, paths, MAP, rooms, map, enemies);
+				hero.Movement(words, paths, MAP, rooms, map, enemies);
 			}
 			else if (words[0] == "subir" || words[0] == "bajar")
 			{
-				hero.Stairs(hero, words, rooms, map);
+				hero.Stairs(words, rooms, map);
 			}
 			else if (words[0] == "atacar")
 			{
@@ -640,7 +703,7 @@ void Caller(Player hero, vector <string> paths, vector <string> words, vector <R
 			}
 			else if (words[0] == "ver")
 			{
-				hero.See(hero, words);
+				hero.See(words, map);
 			}
 			else if (words[0] == "tomar")
 			{
@@ -660,7 +723,7 @@ void Caller(Player hero, vector <string> paths, vector <string> words, vector <R
 			}
 			else if (words[0] == "salvar")
 			{
-				SaveGame(words, hero, map, enemies);
+				SaveGame(words, hero, map, enemies, name);
 			}
 			else if (words[0] == "cerrar")
 			{
@@ -668,7 +731,7 @@ void Caller(Player hero, vector <string> paths, vector <string> words, vector <R
 			}
 			else
 			{
-				cout << "Comando invalido" << endl;
+				cout << "Comando invalido, si quieres ver la lista de acciones teclear 'ver ayuda'" << endl;
 			}
 		}
 		else if (words.size() == 0)
@@ -692,30 +755,28 @@ int main()
 	vector <Room*> map;
 	vector <Enemy*> enemies;
 	Player hero(0, 1, 100, 100, 0, 80, 10, 30);
-
+	string name;
 	NewGame(map, enemies);
 	Intro();
-	cin.get();
-
 	cout << "Bienvenido a Knight's Revenge!" << endl << endl;
-	cout << "Que quieres hacer?" << endl << "(Teclea el numero correspondiente a la opcion que desees)" << endl;
+	cout << "Que quieres hacer?" << endl << "(Teclea el numero correspondiente a la opcion que desees)" << endl << endl;
 	cout << "1.- Nueva partida" << endl;
 	cout << "2.- Cargar partida" << endl;
-	int startup;
 
 	while (true)
 	{
+		string startup;
 		cin >> startup;
 		cout << endl;
-		if (startup == 1)
+		if (startup == "1")
 		{
 			Help();
 			cout << map[0]->m_description << endl;
 			break;
 		}
-		if (startup == 2)
+		if (startup == "2")
 		{
-			LoadGame(hero, data1, data2, map, enemies);
+			LoadGame(hero, map, enemies, name);
 			break;
 		}
 		else
@@ -724,12 +785,13 @@ int main()
 		}
 	}
 
-	Caller(hero, paths, words, map, enemies, MAP);
+	Caller(hero, paths, words, map, enemies, MAP, name);
 
 	for (int i = 0; i < map.size(); i++)
 	{
 		delete(map[i]);
 	}
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		delete(enemies[i]);
@@ -740,9 +802,4 @@ int main()
 }
 
 //Dudas:
-//	Uso correcto de los Try/Catch en multiples casos (como loops)
-//  Fuga de memoria en los punteros a los objetos de las clases
-
-//Pendientes:
-//    Uso de sobrecargas
-//	  Mapa en txt
+//	  Uso correcto de los Try/Catch en multiples casos (como loops)

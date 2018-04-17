@@ -10,6 +10,7 @@ public:
 	bool m_manaPot;
 	bool m_healthPot;
 	bool m_key;
+	bool m_explored;
 
 	Room();
 	~Room();

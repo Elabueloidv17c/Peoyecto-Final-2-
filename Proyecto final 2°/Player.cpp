@@ -4,6 +4,8 @@
 
 void Descriptions(Player hero, vector <Enemy*> enemies);
 
+Player::~Player() {};
+
 Player::Player(int position, bool alive, int health, int maxHealth, int magic, int maxMagic, int attack, int magicAttack)
 {
 	m_position = position;
@@ -16,8 +18,6 @@ Player::Player(int position, bool alive, int health, int maxHealth, int magic, i
 	m_magicAttack = magicAttack;
 };
 
-Player::~Player() {};
-
 void Player::Expansion(int position, vector <string>& paths, int MAP[16][16], string rooms[16])
 {
 	for (int i = 0; i < 16; i++)
@@ -27,19 +27,17 @@ void Player::Expansion(int position, vector <string>& paths, int MAP[16][16], st
 			paths.push_back(rooms[i]);
 		}
 	}
+	cout << endl << "----------------------------------------------------------------------------------------------------------------" << endl;
 	if (paths.size() > 1)
 	{
-		cout << endl;
 		cout << "Puedes ir a estos lugares: " << "\t";
 	}
 	else if (paths.size() == 1)
 	{
-		cout << endl;
 		cout << "Solo puedes ir por aqui: " << "\t";
 	}
 	else
 	{
-		cout << endl;
 		cout << "No puedes ir a ninguna parte..." << endl;
 	}
 	for (int i = 0; i < paths.size(); i++)
@@ -49,9 +47,18 @@ void Player::Expansion(int position, vector <string>& paths, int MAP[16][16], st
 			cout << ", ";
 	}
 	cout << endl;
+	if (paths.size() == 0 && position == 5 || position == 6 || position == 14)
+	{
+		cout << "Pero puedes probar usar la escalera" << endl;
+	}
+	else if (position == 5 || position == 6 || position == 14)
+	{
+		cout << "Aunque tambien puedes probar usar la escalera" << endl;
+	}
+	cout << endl;
 }
 
-void Player::Movement(Player &hero, vector <string> words, vector <string> paths, int MAP[16][16], string rooms[16], vector <Room*> map, vector <Enemy*> enemies)
+void Player::Movement(vector <string> words, vector <string> paths, int MAP[16][16], string rooms[16], vector <Room*> map, vector <Enemy*> enemies)
 {
 	if (Exist(words[1], paths))
 	{
@@ -62,10 +69,14 @@ void Player::Movement(Player &hero, vector <string> words, vector <string> paths
 				break;
 			j++;
 		}
-		hero.m_position = j;
-		cout << "Te has movido a " << rooms[hero.m_position] << endl << endl;
-		cout << map[hero.m_position]->m_description << endl;
-		Descriptions(hero, enemies);
+		m_position = j;
+		if (map[m_position]->m_explored == 0)
+		{
+			map[m_position]->m_explored = 1;
+		}
+		cout << "Te has movido a " << rooms[m_position] << endl << endl;
+		cout << map[m_position]->m_description << endl;
+		Descriptions(*this, enemies);
 	}
 	else
 	{
@@ -74,22 +85,23 @@ void Player::Movement(Player &hero, vector <string> words, vector <string> paths
 	return;
 };
 
-void Player::Stairs(Player &hero, vector <string> words, string rooms[16], vector <Room*> map)
+void Player::Stairs(vector <string> words, string rooms[16], vector <Room*> map)
 {
 	if (words[0] == "subir")
 	{
-		if (hero.m_position == 5 || hero.m_position == 6)
+		if (m_position == 5 || m_position == 6)
 		{
 			if (words[1] == "escalera" || words[1] == "escaleras")
 			{
-				switch (hero.m_position)
+				switch (m_position)
 				{
 
 				case 5:
 					if (map[5]->m_locked == 0)
 					{
-						hero.m_position = 6;
-						cout << "Has subido a " << rooms[hero.m_position] << endl;
+						m_position = 6;
+						map[m_position]->m_explored = 1;
+						cout << "Has subido a " << rooms[m_position] << endl;
 					}
 					else
 					{
@@ -99,8 +111,9 @@ void Player::Stairs(Player &hero, vector <string> words, string rooms[16], vecto
 				case 6:
 					if (map[6]->m_locked == 0)
 					{
-						hero.m_position = 14;
-						cout << "Has subido a " << rooms[hero.m_position] << endl;
+						m_position = 14;
+						map[m_position]->m_explored = 1;
+						cout << "Has subido a " << rooms[m_position] << endl;
 					}
 					else
 					{
@@ -125,20 +138,20 @@ void Player::Stairs(Player &hero, vector <string> words, string rooms[16], vecto
 	}
 	else
 	{
-		if (hero.m_position == 6 || hero.m_position == 14)
+		if (m_position == 6 || m_position == 14)
 		{
 			if (words[1] == "escalera" || words[1] == "escaleras")
 			{
-				switch (hero.m_position)
+				switch (m_position)
 				{
 
 				case 14:
-					hero.m_position = 6;
-					cout << "Has bajado a " << rooms[hero.m_position] << endl;
+					m_position = 6;
+					cout << "Has bajado a " << rooms[m_position] << endl;
 					break;
 				case 6:
-					hero.m_position = 5;
-					cout << "Has bajado a " << rooms[hero.m_position] << endl;
+					m_position = 5;
+					cout << "Has bajado a " << rooms[m_position] << endl;
 					break;
 
 				default:
@@ -926,25 +939,25 @@ void Player::Spell(vector <string> words, string enemyNames[5], Player &hero, ve
 	}
 }
 
-void Player::See(Player hero, vector<string> words)
+void Player::See(vector<string> words, vector <Room*> map)
 {
 	if (words[1] == "inventario")
 	{
-		if (hero.m_inventory.size() == 0)
+		if (m_inventory.size() == 0)
 		{
 			cout << "No tienes nada en el inventario" << endl;
 		}
-		else if (hero.m_inventory.size() == 1)
+		else if (m_inventory.size() == 1)
 		{
-			cout << "Tienes un elemento en el inventario: " << endl << hero.m_inventory[0] << endl;
+			cout << "Tienes un elemento en el inventario: " << endl << m_inventory[0] << endl;
 		}
 		else
 		{
 			cout << "Tienes los siguientes elementos en el inventario: " << endl;
-			for (int i = 0; i < hero.m_inventory.size(); i++)
+			for (int i = 0; i < m_inventory.size(); i++)
 			{
-				cout << hero.m_inventory[i];
-				if (i < hero.m_inventory.size() - 1)
+				cout << m_inventory[i];
+				if (i < m_inventory.size() - 1)
 				{
 					cout << ", ";
 				}
@@ -979,7 +992,209 @@ void Player::See(Player hero, vector<string> words)
 		cout << "Cerrar: Esta accion sirve para cerrar el juego y perder la partida, por ejemplo:" << endl;
 		cout << "    -Cerrar juego" << endl << endl;
 		cout << "Puedes usar mayusculas o minusculas a tu gusto, el juego reconocera las palabras de todos modos" << endl << endl;
-		cout << "Nota: Si quieres volver a ver este menu, introduce el comando 'Ver ayuda'" << endl;
+	}
+
+	else if (words[1] == "mapa")
+	{
+		if (map[0]->m_explored == 1)
+		{
+			cout << "                                         Primer piso:" << endl;
+			cout << endl;
+			cout << "                                        --------------" << endl;
+			cout << "                                        |   Entrada  |" << endl;
+			cout << "                                        --------------" << endl;
+			cout << "                                               |" << endl;
+			cout << "                                               |" << endl;
+		}
+
+		if (map[1]->m_explored == 1)
+		{
+			cout << "                                        --------------" << endl;
+			cout << "                                --------|  Explanada |--------" << endl;
+			cout << "                                |       --------------       |" << endl;
+		}
+
+		if (map[2]->m_explored == 0 && map[3]->m_explored == 1)
+		{
+			cout << "                        ----------------" << endl;
+			cout << "                        |   Almacen    |" << endl;
+			cout << "                        ----------------" << endl;
+			cout << "                                |" << endl;
+		}
+
+		if (map[2]->m_explored == 1 && map[3]->m_explored == 0)
+		{
+			cout << "                                                      ----------------" << endl;
+			cout << "                                                      |    Pasillo   |" << endl;
+			cout << "                                                      ----------------" << endl;
+			cout << "                                                              |" << endl;
+		}
+
+		if (map[2]->m_explored == 1 && map[3]->m_explored == 1)
+		{
+			cout << "                        ----------------              ----------------" << endl;
+			cout << "                        |   Almacen    |              |    Pasillo   |" << endl;
+			cout << "                        ----------------              ----------------" << endl;
+			cout << "                                |                            |" << endl;
+		}
+
+		if (map[4]->m_explored == 1)
+		{
+			cout << "                                ------------------------------" << endl;
+			cout << "                                                |" << endl;
+			cout << "                                                |" << endl;
+			cout << "                                        ----------------" << endl;
+			cout << "                                        |     Sala     |" << endl;
+			cout << "                                        ----------------" << endl;
+			cout << "                                                |" << endl;
+			cout << "                                                |" << endl;
+		}
+
+		if (map[5]->m_explored == 1)
+		{
+			cout << "                                        ----------------" << endl;
+			cout << "                                        |  Escalera_pb |" << endl;
+			cout << "                                        ----------------" << endl;
+		}
+
+		if (map[9]->m_explored == 1)
+		{
+			cout << "                                       Segundo piso:" << endl;
+			cout << endl;
+			cout << "                                        ------------" << endl;
+			cout << "                                        |  Balcon  |" << endl;
+			cout << "                                        ------------" << endl;
+		}
+
+		if (map[6]->m_explored == 1 && map[7]->m_explored == 1 && map[8]->m_explored == 1)
+		{
+			if (map[9]->m_explored == 0)
+			{
+				cout << "                                       Segundo piso:" << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+			}
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+			cout << "                 --------------        --------------           -------------" << endl;
+			cout << "		         | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
+			cout << "                 --------------        --------------           -------------" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+		}
+
+		if (map[6]->m_explored == 1 && map[7]->m_explored == 0 && map[8]->m_explored == 1)
+		{
+			if (map[9]->m_explored == 0)
+			{
+				cout << "                                       Segundo piso:" << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+			}
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+			cout << "                 --------------        --------------" << endl;
+			cout << "		         | Dormitorio |--------| Escalera_1 |" << endl;
+			cout << "                 --------------        --------------" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+		}
+
+		if (map[6]->m_explored == 1 && map[7]->m_explored == 1 && map[8]->m_explored == 0)
+		{
+			if (map[9]->m_explored == 0)
+			{
+				cout << "                                       Segundo piso:" << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+			}
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                       --------------           -------------" << endl;
+			cout << "		                       --------| Escalera_1 |-----------|   Cocina  |" << endl;
+			cout << "                                       --------------           -------------" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+		}
+
+		if (map[6]->m_explored == 1 && map[7]->m_explored == 0 && map[8]->m_explored == 0)
+		{
+			if (map[9]->m_explored == 0)
+			{
+				cout << "                                       Segundo piso:" << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+				cout << endl;
+			}
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                       --------------" << endl;
+			cout << "		                       --------| Escalera_1 |-----------" << endl;
+			cout << "                                       --------------" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                              |" << endl;
+		}
+
+		if (map[11]->m_explored == 1 && map[10]->m_explored == 1 && map[12]->m_explored == 1)
+		{
+			cout << "                --------------          -------------           ------------" << endl;
+			cout << "                |   Arena    |----------|    Bar    |-----------| Calabozo |" << endl;
+			cout << "                --------------          -------------           ------------" << endl;
+			cout << "                       |                                              |" << endl;
+			cout << "                       |                                              |" << endl;
+		}
+
+		if (map[11]->m_explored == 1 && map[10]->m_explored == 1 && map[12]->m_explored == 0)
+		{
+			cout << "                --------------          -------------" << endl;
+			cout << "                |   Arena    |----------|    Bar    |-----------" << endl;
+			cout << "                --------------          -------------" << endl;
+			cout << "                       |" << endl;
+			cout << "                       |" << endl;
+		}
+
+		if (map[11]->m_explored == 1 && map[10]->m_explored == 0 && map[12]->m_explored == 1)
+		{
+			cout << "                                        -------------           ------------" << endl;
+			cout << "                                        |    Bar    |-----------| Calabozo |" << endl;
+			cout << "                                        -------------           ------------" << endl;
+			cout << "                                                                      |" << endl;
+			cout << "                                                                      |" << endl;
+		}
+
+		if (map[13]->m_explored == 1)
+		{
+			cout << "                       ------------------------------------------------" << endl;
+			cout << "                                              |" << endl;
+			cout << "                                        -------------" << endl;
+			cout << "                                        |  Armeria  |" << endl;
+			cout << "                                        -------------" << endl;
+		}
+
+		if (map[14]->m_explored == 1)
+		{
+			cout << "                                         Tercer piso:" << endl;
+			cout << endl;
+			cout << "                                        --------------" << endl;
+			cout << "                                        | Escalera_2 |" << endl;
+			cout << "                                        --------------" << endl;
+			cout << "                                               |" << endl;
+			cout << "                                               |" << endl;
+		}
+
+		if (map[15]->m_explored == 1)
+		{
+			cout << "                                        --------------" << endl;
+			cout << "                                        |   Atalaya  |" << endl;
+			cout << "                                        --------------" << endl;
+		}
 	}
 
 	else
@@ -1035,15 +1250,15 @@ void Player::Take(vector <string> words, Player &hero, vector <Room*> map, vecto
 	}
 }
 
-void Player::HUD(Player hero)
+void Player::HUD(string rooms[16])
 {
-	cout << endl;
-	cout << "Vida:" << "\t" << hero.m_health << "/" << hero.m_maxHeatlh << "\t" << "\t" << "\t" << "\t" << "Magia:" << "\t" << hero.m_magic << "/" 
-	<< hero.m_maxMagic << "\t" << "\t" << "\t" << "\t" <<"Llave:" << "\t";
+	cout << "Vida:" << "\t" << m_health << "/" << m_maxHeatlh << "\t" << "\t" << "\t" << "Magia:" << "\t";
+	cout << m_magic << "/" << m_maxMagic << "\t" << "\t" << "Posicion: " << rooms[m_position] << "\t" << "\t";
+	cout << "Llave:" << "\t";
 	bool exist = false;
-	for (int i = 0; i < hero.m_inventory.size(); i++)
+	for (int i = 0; i < m_inventory.size(); i++)
 	{
-		if (hero.m_inventory[i] == "llave")
+		if (m_inventory[i] == "llave")
 		{
 			cout << "Conseguida" << endl;
 			exist = true;
@@ -1091,7 +1306,7 @@ void Player::Use(vector <string> words, Player &hero, vector <Room*> &map)
 		}
 		else
 		{
-			cout << "No tienes la llave" << endl;
+			cout << "No puedes usar la llave aqui" << endl;
 		}
 	}
 	if (words[1] == "magia")
@@ -1204,4 +1419,213 @@ void Player::Exit(vector <string> words, Player &hero)
 	{
 		cout << "Para terminar la partida y cerrar el juego tienes que teclear el comando 'Cerrar juego'" << endl;
 	}
+}
+
+void Player::Map(vector <Room*> &map, vector <string> words, string name)
+{
+	ofstream* writer = new ofstream;
+	writer->open(name +"_map.txt");
+
+	if (map[0]->m_explored == 1)
+	{
+		*writer << "                                         Primer piso:" << endl;
+		*writer << endl;
+		*writer << "                                        --------------" << endl;
+		*writer << "                                        |   Entrada  |" << endl;
+		*writer << "                                        --------------" << endl;
+		*writer << "                                               |" << endl;
+		*writer << "                                               |" << endl;
+	}
+
+	if (map[1]->m_explored == 1)
+	{
+		*writer << "                                        --------------" << endl;
+		*writer << "                                --------|  Explanada |--------" << endl;
+		*writer << "                                |       --------------       |" << endl;
+	}
+
+	if (map[2]->m_explored == 0 && map[3]->m_explored == 1)
+	{
+		*writer << "                        ----------------" << endl;
+		*writer << "                        |   Almacen    |" << endl;
+		*writer << "                        ----------------" << endl;
+		*writer << "                                |" << endl;
+	}
+
+	if (map[2]->m_explored == 1 && map[3]->m_explored == 0)
+	{
+		*writer << "                                                      ----------------" << endl;
+		*writer << "                                                      |    Pasillo   |" << endl;
+		*writer << "                                                      ----------------" << endl;
+		*writer << "                                                              |" << endl;
+	}
+
+	if (map[2]->m_explored == 1 && map[3]->m_explored == 1)
+	{
+		*writer << "                        ----------------              ----------------" << endl;
+		*writer << "                        |   Almacen    |              |    Pasillo   |" << endl;
+		*writer << "                        ----------------              ----------------" << endl;
+		*writer << "                                |                            |" << endl;
+	}
+
+	if (map[4]->m_explored == 1)
+	{
+		*writer << "                                ------------------------------" << endl;
+		*writer << "                                                |" << endl;
+		*writer << "                                                |" << endl;
+		*writer << "                                        ----------------" << endl;
+		*writer << "                                        |     Sala     |" << endl;
+		*writer << "                                        ----------------" << endl;
+		*writer << "                                                |" << endl;
+		*writer << "                                                |" << endl;
+	}
+
+	if (map[5]->m_explored == 1)
+	{
+		*writer << "                                        ----------------" << endl;
+		*writer << "                                        |  Escalera_pb |" << endl;
+		*writer << "                                        ----------------" << endl;
+	}
+
+	if (map[9]->m_explored == 1)
+	{
+		*writer << "                                       Segundo piso:" << endl;
+		*writer << endl;
+		*writer << "                                        ------------" << endl;
+		*writer << "                                        |  Balcon  |" << endl;
+		*writer << "                                        ------------" << endl;
+	}
+
+	if (map[6]->m_explored == 1 && map[7]->m_explored == 1 && map[8]->m_explored == 1)
+	{
+		if (map[9]->m_explored == 0)
+		{
+			*writer << "                                       Segundo piso:" << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+		}
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                 --------------        --------------           -------------" << endl;
+		*writer << "		         | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
+		*writer << "                 --------------        --------------           -------------" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+	}
+
+	if (map[6]->m_explored == 1 && map[7]->m_explored == 0 && map[8]->m_explored == 1)
+	{
+		if (map[9]->m_explored == 0)
+		{
+			*writer << "                                       Segundo piso:" << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+		}
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                 --------------        --------------" << endl;
+		*writer << "		         | Dormitorio |--------| Escalera_1 |" << endl;
+		*writer << "                 --------------        --------------" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+	}
+
+	if (map[6]->m_explored == 1 && map[7]->m_explored == 1 && map[8]->m_explored == 0)
+	{
+		if (map[9]->m_explored == 0)
+		{
+			*writer << "                                       Segundo piso:" << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+		}
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                       --------------           -------------" << endl;
+		*writer << "		                       --------| Escalera_1 |-----------|   Cocina  |" << endl;
+		*writer << "                                       --------------           -------------" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+	}
+
+	if (map[6]->m_explored == 1 && map[7]->m_explored == 0 && map[8]->m_explored == 0)
+	{
+		if (map[9]->m_explored == 0)
+		{
+			*writer << "                                       Segundo piso:" << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+			*writer << endl;
+		}
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                       --------------" << endl;
+		*writer << "		                       --------| Escalera_1 |-----------" << endl;
+		*writer << "                                       --------------" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                              |" << endl;
+	}
+
+	if (map[11]->m_explored == 1 && map[10]->m_explored == 1 && map[12]->m_explored == 1)
+	{
+		*writer << "                --------------          -------------           ------------" << endl;
+		*writer << "                |   Arena    |----------|    Bar    |-----------| Calabozo |" << endl;
+		*writer << "                --------------          -------------           ------------" << endl;
+		*writer << "                       |                                              |" << endl;
+		*writer << "                       |                                              |" << endl;
+	}
+
+	if (map[11]->m_explored == 1 && map[10]->m_explored == 1 && map[12]->m_explored == 0)
+	{
+		*writer << "                --------------          -------------" << endl;
+		*writer << "                |   Arena    |----------|    Bar    |-----------" << endl;
+		*writer << "                --------------          -------------" << endl;
+		*writer << "                       |" << endl;
+		*writer << "                       |" << endl;
+	}
+
+	if (map[11]->m_explored == 1 && map[10]->m_explored == 0 && map[12]->m_explored == 1)
+	{
+		*writer << "                                        -------------           ------------" << endl;
+		*writer << "                                        |    Bar    |-----------| Calabozo |" << endl;
+		*writer << "                                        -------------           ------------" << endl;
+		*writer << "                                                                      |" << endl;
+		*writer << "                                                                      |" << endl;
+	}
+
+	if (map[13]->m_explored == 1)
+	{
+		*writer << "                       ------------------------------------------------" << endl;
+		*writer << "                                              |" << endl;
+		*writer << "                                        -------------" << endl;
+		*writer << "                                        |  Armeria  |" << endl;
+		*writer << "                                        -------------" << endl;
+	}
+
+	if (map[14]->m_explored == 1)
+	{
+		*writer << "                                         Tercer piso:" << endl;
+		*writer << endl;
+		*writer << "                                        --------------" << endl;
+		*writer << "                                        | Escalera_2 |" << endl;
+		*writer << "                                        --------------" << endl;
+		*writer << "                                               |" << endl;
+		*writer << "                                               |" << endl;
+	}
+
+	if (map[15]->m_explored == 1)
+	{
+		*writer << "                                        --------------" << endl;
+		*writer << "                                        |   Atalaya  |" << endl;
+		*writer << "                                        --------------" << endl;
+	}
+
+	writer->close();
+	delete(writer);
 }
