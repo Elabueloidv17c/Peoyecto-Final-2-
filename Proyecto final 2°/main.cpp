@@ -45,7 +45,7 @@ string help[26] = {
 	"Maldecir: Esta accion sirve para lanzar una maldicion que infringe mucho daño al enemigo, por ejemplo:",
 	"    -Maldecir Goblin",
 	"Ver: Esta accion sirve para ver los elementos que ya tienes en tu inventario, por ejemplo:",
-	"    -Ver inventario",
+	"    -Ver inventario \n    -Ver mapa",
 	"Salvar: Esta accion sirve para guardas tus progresos en el juego, por ejemplo:",
 	"    -Salvar partida",
 	"Cargar: Esta accion sirve para cargar una partida guardada y continuar jugando desde ahi, por ejemplo:",
@@ -84,7 +84,6 @@ int MAP[16][16] = {
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 },
 { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 };
-
 
 ostream& operator << (ostream &output, string help[])
 {

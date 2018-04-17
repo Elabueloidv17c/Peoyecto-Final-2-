@@ -986,7 +986,7 @@ void Player::See(vector<string> words, vector <Room*> map)
 		cout << "Maldecir: Esta accion sirve para lanzar una maldicion que infringe mucho daño al enemigo, por ejemplo:" << endl;
 		cout << "    -Maldecir Goblin" << endl;
 		cout << "Ver: Esta accion sirve para ver los elementos que ya tienes en tu inventario, por ejemplo:" << endl;
-		cout << "    -Ver inventario" << endl;
+		cout << "    -Ver inventario \n    -Ver mapa" << endl;
 		cout << "Salvar: Esta accion sirve para guardas tus progresos en el juego, por ejemplo:" << endl;
 		cout << "    -Salvar partida" << endl;
 		cout << "Cerrar: Esta accion sirve para cerrar el juego y perder la partida, por ejemplo:" << endl;
@@ -1079,7 +1079,7 @@ void Player::See(vector<string> words, vector <Room*> map)
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
 			cout << "                 --------------        --------------           -------------" << endl;
-			cout << "		         | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
+			cout << "                 | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
 			cout << "                 --------------        --------------           -------------" << endl;
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
@@ -1098,7 +1098,7 @@ void Player::See(vector<string> words, vector <Room*> map)
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
 			cout << "                 --------------        --------------" << endl;
-			cout << "		         | Dormitorio |--------| Escalera_1 |" << endl;
+			cout << "		          | Dormitorio |--------| Escalera_1 |" << endl;
 			cout << "                 --------------        --------------" << endl;
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
@@ -1117,7 +1117,7 @@ void Player::See(vector<string> words, vector <Room*> map)
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
 			cout << "                                       --------------           -------------" << endl;
-			cout << "		                       --------| Escalera_1 |-----------|   Cocina  |" << endl;
+			cout << "                               --------| Escalera_1 |-----------|   Cocina  |" << endl;
 			cout << "                                       --------------           -------------" << endl;
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
@@ -1135,9 +1135,9 @@ void Player::See(vector<string> words, vector <Room*> map)
 			}
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
-			cout << "                                       --------------" << endl;
-			cout << "		                       --------| Escalera_1 |-----------" << endl;
-			cout << "                                       --------------" << endl;
+			cout << "                                      --------------" << endl;
+			cout << "                              --------| Escalera_1 |-----------" << endl;
+			cout << "                                      --------------" << endl;
 			cout << "                                              |" << endl;
 			cout << "                                              |" << endl;
 		}
@@ -1163,10 +1163,18 @@ void Player::See(vector<string> words, vector <Room*> map)
 		if (map[11]->m_explored == 1 && map[10]->m_explored == 0 && map[12]->m_explored == 1)
 		{
 			cout << "                                        -------------           ------------" << endl;
-			cout << "                                        |    Bar    |-----------| Calabozo |" << endl;
+			cout << "                              ----------|    Bar    |-----------| Calabozo |" << endl;
 			cout << "                                        -------------           ------------" << endl;
 			cout << "                                                                      |" << endl;
 			cout << "                                                                      |" << endl;
+		}
+
+		if (map[11]->m_explored == 1 && map[10]->m_explored == 0 && map[12]->m_explored == 0)
+		{
+			cout << "                                        -------------" << endl;
+			cout << "                              ----------|    Bar    |----------" << endl;
+			cout << "                                        -------------" << endl;
+
 		}
 
 		if (map[13]->m_explored == 1)
@@ -1509,7 +1517,7 @@ void Player::Map(vector <Room*> &map, vector <string> words, string name)
 		*writer << "                                              |" << endl;
 		*writer << "                                              |" << endl;
 		*writer << "                 --------------        --------------           -------------" << endl;
-		*writer << "		         | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
+		*writer << "                 | Dormitorio |--------| Escalera_1 |-----------|   Cocina  |" << endl;
 		*writer << "                 --------------        --------------           -------------" << endl;
 		*writer << "                                              |" << endl;
 		*writer << "                                              |" << endl;
@@ -1547,7 +1555,7 @@ void Player::Map(vector <Room*> &map, vector <string> words, string name)
 		*writer << "                                              |" << endl;
 		*writer << "                                              |" << endl;
 		*writer << "                                       --------------           -------------" << endl;
-		*writer << "		                       --------| Escalera_1 |-----------|   Cocina  |" << endl;
+		*writer << "                               --------| Escalera_1 |-----------|   Cocina  |" << endl;
 		*writer << "                                       --------------           -------------" << endl;
 		*writer << "                                              |" << endl;
 		*writer << "                                              |" << endl;
@@ -1597,6 +1605,14 @@ void Player::Map(vector <Room*> &map, vector <string> words, string name)
 		*writer << "                                        -------------           ------------" << endl;
 		*writer << "                                                                      |" << endl;
 		*writer << "                                                                      |" << endl;
+	}
+
+
+	if (map[11]->m_explored == 1 && map[10]->m_explored == 0 && map[12]->m_explored == 0)
+	{
+		*writer << "                                        -------------" << endl;
+		*writer << "                              ----------|    Bar    |----------" << endl;
+		*writer << "                                        -------------" << endl;
 	}
 
 	if (map[13]->m_explored == 1)
